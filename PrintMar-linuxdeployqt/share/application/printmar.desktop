@@ -1,0 +1,7 @@
+[Desktop Entry]
+Type=Application
+Name=Pdf launcher
+Comment=Wybierz działanie dla plików pdf
+Exec=PrintMar
+Icon=pdfeditor
+Categories=Office;
