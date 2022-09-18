@@ -8,8 +8,7 @@ MyProcess::MyProcess(QObject *parent)
 
 void MyProcess::run(QString program, QStringList arguments)
 {
-    if(!program.isEmpty() && !arguments.isEmpty())
-    {
+    if(!program.isEmpty() && !arguments.isEmpty()) {
         process->start(program, arguments);
     } else {
         EXIT_FAILURE;

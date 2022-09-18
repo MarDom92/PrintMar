@@ -2,7 +2,10 @@
 #include "./ui_mainwindow.h"
 
 #include <QFile>
+#include <QFileDialog>
 #include <QString>
+#include <QDebug>
+#include <QPushButton>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -24,8 +27,9 @@ MainWindow::MainWindow(QWidget *parent)
 
     readQSettings();
 
-    ui->checkBox_to_remove_A4->setChecked(toRemoveA4);
-    ui->checkBox_to_remove_A6->setChecked(toRemoveA6);
+    setStateOfQPushButton(ui->pushButton_to_remove_A4, toRemoveA4);
+    setStateOfQPushButton(ui->pushButton_to_remove_A6, toRemoveA6);
+    setStateOfQPushButton(ui->pushButton_to_close_app, closeAppAfterOpenPdf);
 }
 
 MainWindow::~MainWindow()
@@ -45,12 +49,11 @@ void MainWindow::showMainWindow(QString currentPrinterA4, QString currentPrinter
 
 void MainWindow::on_pushButton_print_A4_clicked()
 {
-    currentPrinterA4 = "EPSON-L3250";
+    filename = getFilenameToPrint();
 
     printDocument(currentPrinterA4, A4);
 
-    if(toRemoveA4)
-    {
+    if(toRemoveA4) {
         removeFile(filename);
     }
 
@@ -59,12 +62,11 @@ void MainWindow::on_pushButton_print_A4_clicked()
 
 void MainWindow::on_pushButton_print_A6_clicked()
 {
-    currentPrinterA6 = "EPSON-L3250";
+    filename = getFilenameToPrint();
 
     printDocument(currentPrinterA6, A6);
 
-    if(toRemoveA6)
-    {
+    if(toRemoveA6) {
         removeFile(filename);
     }
 
@@ -73,13 +75,51 @@ void MainWindow::on_pushButton_print_A6_clicked()
 
 void MainWindow::on_pushButton_open_pdf_clicked()
 {
+    filename = getFilenameToPrint();
+
     QString program = "xdg-open";
     QStringList arguments;
     arguments << filename;
 
     myProcess->run(program, arguments);
 
-    this->close();
+    if(closeAppAfterOpenPdf && !filename.isEmpty()) {
+        this->close();
+    }
+}
+
+void MainWindow::on_pushButton_to_remove_A4_clicked(bool checked)
+{
+    toRemoveA4 = checked ? true : false;
+
+    if (checked) {
+        setStateOfQPushButton(ui->pushButton_to_remove_A4, true);
+    } else {
+        setStateOfQPushButton(ui->pushButton_to_remove_A4, false);
+    }
+}
+
+
+void MainWindow::on_pushButton_to_remove_A6_clicked(bool checked)
+{
+    toRemoveA6 = checked ? true : false;
+
+    if (checked) {
+        setStateOfQPushButton(ui->pushButton_to_remove_A6, true);
+    } else {
+        setStateOfQPushButton(ui->pushButton_to_remove_A6, false);
+    }
+}
+
+void MainWindow::on_pushButton_to_close_app_clicked(bool checked)
+{
+    closeAppAfterOpenPdf = checked ? true : false;
+
+    if (checked) {
+        setStateOfQPushButton(ui->pushButton_to_close_app, true);
+    } else {
+        setStateOfQPushButton(ui->pushButton_to_close_app, false);
+    }
 }
 
 void MainWindow::on_pushButton_settings_clicked()
@@ -94,17 +134,6 @@ void MainWindow::on_pushButton_close_clicked()
     this->close();
 }
 
-void MainWindow::on_checkBox_to_remove_A4_clicked(bool checked)
-{
-    toRemoveA4 = checked ? true : false;
-}
-
-
-void MainWindow::on_checkBox_to_remove_A6_clicked(bool checked)
-{
-    toRemoveA6 = checked ? true : false;
-}
-
 QStringList MainWindow::findPrinters()
 {
     QString program = "/bin/bash";
@@ -117,6 +146,24 @@ QStringList MainWindow::findPrinters()
     QString printers = myProcess->readAll().replace("\n", "");
 
     return printers.split("\n");
+}
+
+QString MainWindow::getFilenameToPrint()
+{
+    if(filename.isEmpty()) {
+        filename = QFileDialog::getOpenFileName(this,tr("Wybierz plik PDF"), "~/", tr("Pliki PDF (*.pdf)"));
+    }
+    return filename;
+}
+
+void MainWindow::setStateOfQPushButton(QPushButton *button, bool state)
+{
+    if(state) {
+        button->setText("TAK");
+    } else {
+        button->setText("NIE");
+    }
+    button->setChecked(state);
 }
 
 void MainWindow::printDocument(QString printer, paperFormat format)
@@ -139,6 +186,7 @@ void MainWindow::readQSettings()
 {
     toRemoveA4 = settings->value("toRemoveA4", false).toBool();
     toRemoveA6 = settings->value("toRemoveA6", false).toBool();
+    closeAppAfterOpenPdf = settings->value("closeAppAfterOpenPdf", false).toBool();
 
     QString defaultPrinter = findPrinters().at(0);
 
@@ -150,6 +198,7 @@ void MainWindow::saveQSettings()
 {
     settings->setValue("toRemoveA4", toRemoveA4);
     settings->setValue("toRemoveA6", toRemoveA6);
+    settings->setValue("closeAppAfterOpenPdf", closeAppAfterOpenPdf);
     settings->setValue("currentPrinterA4", currentPrinterA4);
     settings->setValue("currentPrinterA6", currentPrinterA6);
 }
@@ -158,4 +207,3 @@ void MainWindow::closeEvent(QCloseEvent *event)
 {
     saveQSettings();
 }
-
