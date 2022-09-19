@@ -11,6 +11,7 @@ Settings::Settings(QWidget *parent) :
 
     previousPrinterA4 = currentPrinterA4;
     previousPrinterA6 = currentPrinterA6;
+    previouspdfViewer = pdfViewer;
 }
 
 Settings::~Settings()
@@ -19,26 +20,30 @@ Settings::~Settings()
     delete ui;
 }
 
-void Settings::showSettings(QStringList printers)
+void Settings::showSettings(QStringList printers, QString pdfViewer)
 {
     this->printers = printers;
+    this->pdfViewer = pdfViewer;
 
     this->show();
 
     ui->comboBox_printing_A4->addItems(this->printers);
     ui->comboBox_printing_A6->addItems(this->printers);
+    ui->lineEdit_pdf_viewer->setText(pdfViewer);
 }
 
 void Settings::on_pushButton_confirm_clicked()
 {
-    emit closeSettings(currentPrinterA4, currentPrinterA6);
+    pdfViewer  = ui->lineEdit_pdf_viewer->text();
+
+    emit closeSettings(currentPrinterA4, currentPrinterA6, pdfViewer);
     this->close();
 }
 
 
 void Settings::on_pushButton_cancel_clicked()
-{
-    emit closeSettings(previousPrinterA4, previousPrinterA6);
+{    
+    emit closeSettings(previousPrinterA4, previousPrinterA6, previouspdfViewer);
     this->close();
 }
 

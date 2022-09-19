@@ -4,8 +4,8 @@
 #include <QFile>
 #include <QFileDialog>
 #include <QString>
-#include <QDebug>
 #include <QPushButton>
+#include <QMessageBox>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -39,12 +39,13 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
-void MainWindow::showMainWindow(QString currentPrinterA4, QString currentPrinterA6)
+void MainWindow::showMainWindow(QString currentPrinterA4, QString currentPrinterA6, QString pdfViewer)
 {
     this->show();
 
     this->currentPrinterA4 = currentPrinterA4;
     this->currentPrinterA6 = currentPrinterA6;
+    this->pdfViewer =pdfViewer;
 }
 
 void MainWindow::on_pushButton_print_A4_clicked()
@@ -53,11 +54,8 @@ void MainWindow::on_pushButton_print_A4_clicked()
 
     printDocument(currentPrinterA4, A4);
 
-    if(toRemoveA4) {
-        removeFile(filename);
-    }
-
     if(toRemoveA4 && !filename.isEmpty()) {
+        removeFile(filename);
         this->close();
     }
 }
@@ -68,27 +66,31 @@ void MainWindow::on_pushButton_print_A6_clicked()
 
     printDocument(currentPrinterA6, A6);
 
-    if(toRemoveA6) {
-        removeFile(filename);
-    }
-
     if(toRemoveA6 && !filename.isEmpty()) {
+         removeFile(filename);
         this->close();
     }
 }
 
 void MainWindow::on_pushButton_open_pdf_clicked()
 {
-    filename = getFilenameToPrint();
+    if(pdfViewer == "") {
+        QMessageBox msgBox;
+        msgBox.setText("Nieznana przeglądarka plików PDF");
+        msgBox.setInformativeText("Podaj nazwę programu do przeglądania plików PDF w ustawieniach i spróbuj ponownie.");
+        msgBox.exec();
+    } else {
+        filename = getFilenameToPrint();
 
-    QString program = "xdg-open";
-    QStringList arguments;
-    arguments << filename;
+        QString program = pdfViewer;//"xdg-open";
+        QStringList arguments;
+        arguments << filename;
 
-    myProcess->run(program, arguments);
+        myProcess->run(program, arguments);
 
-    if(closeAppAfterOpenPdf && !filename.isEmpty()) {
-        this->close();
+        if(closeAppAfterOpenPdf && !filename.isEmpty()) {
+            this->close();
+        }
     }
 }
 
@@ -130,7 +132,7 @@ void MainWindow::on_pushButton_settings_clicked()
 {
     this->hide();
     printers = findPrinters();
-    emit openSettings(printers);
+    emit openSettings(printers, pdfViewer);
 }
 
 void MainWindow::on_pushButton_close_clicked()
@@ -147,9 +149,16 @@ QStringList MainWindow::findPrinters()
     myProcess->run(program, arguments);
     myProcess->waitForFinished();
 
-    QString printers = myProcess->readAll().replace("\n", "");
+    QString result = myProcess->readAll();
+    QStringList printers = result.split("\n");
 
-    return printers.split("\n");
+    for(int i = 0; i <= printers.size(); i++) {
+        if(printers.at(i) == "") {
+            printers.removeAt(i);
+        }
+    }
+
+    return printers;
 }
 
 QString MainWindow::getFilenameToPrint()
@@ -196,6 +205,8 @@ void MainWindow::readQSettings()
 
     currentPrinterA4 = settings->value("currentPrinterA4", defaultPrinter).toString();
     currentPrinterA6 = settings->value("currentPrinterA6", defaultPrinter).toString();
+
+    pdfViewer = settings->value("pdfViewer", "").toString();
 }
 
 void MainWindow::saveQSettings()
@@ -205,6 +216,7 @@ void MainWindow::saveQSettings()
     settings->setValue("closeAppAfterOpenPdf", closeAppAfterOpenPdf);
     settings->setValue("currentPrinterA4", currentPrinterA4);
     settings->setValue("currentPrinterA6", currentPrinterA6);
+    settings->setValue("pdfViewer", pdfViewer);
 }
 
 void MainWindow::closeEvent(QCloseEvent *event)

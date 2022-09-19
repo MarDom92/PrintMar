@@ -26,15 +26,20 @@ private:
 
     QString currentPrinterA4;
     QString currentPrinterA6;
+
     QString previousPrinterA4;
     QString previousPrinterA6;
+
     QStringList printers;
 
+    QString pdfViewer;
+    QString previouspdfViewer;
+
 public slots:
-    void showSettings(QStringList printers);
+    void showSettings(QStringList printers, QString pdfViewer);
 
 signals:
-    void closeSettings(QString currentPrinterA4, QString currentPrinterA6);
+    void closeSettings(QString currentPrinterA4, QString currentPrinterA6, QString pdfViewer);
 
 private slots:
     void on_pushButton_confirm_clicked();

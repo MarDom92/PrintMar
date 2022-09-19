@@ -23,7 +23,7 @@ public:
     ~MainWindow();
 
 private slots:
-    void showMainWindow(QString currentPrinterA4, QString currentPrinterA6);
+    void showMainWindow(QString currentPrinterA4, QString currentPrinterA6, QString pdfViewer);
 
     void on_pushButton_print_A4_clicked();
 
@@ -60,6 +60,8 @@ private:
     QString currentPrinterA6;
     QStringList printers;
 
+    QString pdfViewer;
+
     enum paperFormat { A4, A6 };
 
     QStringList findPrinters();
@@ -79,6 +81,6 @@ private:
     void closeEvent(QCloseEvent *event);
 
 signals:
-    void openSettings(QStringList printers);
+    void openSettings(QStringList printers, QString pdfViewer);
 };
 #endif // MAINWINDOW_H
