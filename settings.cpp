@@ -34,7 +34,7 @@ void Settings::showSettings(QStringList printers, QString pdfViewer)
 
 void Settings::on_pushButton_confirm_clicked()
 {
-    pdfViewer  = ui->lineEdit_pdf_viewer->text();
+    pdfViewer = ui->lineEdit_pdf_viewer->text();
 
     emit closeSettings(currentPrinterA4, currentPrinterA6, pdfViewer);
     this->close();
