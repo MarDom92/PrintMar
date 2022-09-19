@@ -56,8 +56,9 @@ void MainWindow::on_pushButton_print_A4_clicked()
 
     if(toRemoveA4 && !filename.isEmpty()) {
         removeFile(filename);
-        this->close();
     }
+
+    this->close();
 }
 
 void MainWindow::on_pushButton_print_A6_clicked()
@@ -67,9 +68,10 @@ void MainWindow::on_pushButton_print_A6_clicked()
     printDocument(currentPrinterA6, A6);
 
     if(toRemoveA6 && !filename.isEmpty()) {
-         removeFile(filename);
-        this->close();
+        removeFile(filename);
     }
+
+    this->close();
 }
 
 void MainWindow::on_pushButton_open_pdf_clicked()
