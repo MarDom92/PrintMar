@@ -52,7 +52,7 @@ void MainWindow::on_pushButton_print_A4_clicked()
 {
     filename = getFilenameToPrint();
 
-    printDocument(currentPrinterA4, A4);
+    printDocument(currentPrinterA4, "A4");
 
     if(toRemoveA4 && !filename.isEmpty()) {
         removeFile(filename);
@@ -65,7 +65,7 @@ void MainWindow::on_pushButton_print_A6_clicked()
 {
     filename = getFilenameToPrint();
 
-    printDocument(currentPrinterA6, A6);
+    printDocument(currentPrinterA6, "A6");
 
     if(toRemoveA6 && !filename.isEmpty()) {
         removeFile(filename);
@@ -181,7 +181,7 @@ void MainWindow::setStateOfQPushButton(QPushButton *button, bool state)
     button->setChecked(state);
 }
 
-void MainWindow::printDocument(QString printer, paperFormat format)
+void MainWindow::printDocument(QString printer, QString format)
 {
     QString program = "lp";
 

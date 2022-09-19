@@ -62,15 +62,13 @@ private:
 
     QString pdfViewer;
 
-    enum paperFormat { A4, A6 };
-
     QStringList findPrinters();
 
     QString getFilenameToPrint();
 
     void setStateOfQPushButton(QPushButton *button, bool state);
 
-    void printDocument(QString printer, paperFormat format);
+    void printDocument(QString printer, QString format);
 
     void removeFile(QString filename);
 
