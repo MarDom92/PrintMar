@@ -57,7 +57,9 @@ void MainWindow::on_pushButton_print_A4_clicked()
         removeFile(filename);
     }
 
-    this->close();
+    if(toRemoveA4 && !filename.isEmpty()) {
+        this->close();
+    }
 }
 
 void MainWindow::on_pushButton_print_A6_clicked()
@@ -70,7 +72,9 @@ void MainWindow::on_pushButton_print_A6_clicked()
         removeFile(filename);
     }
 
-    this->close();
+    if(toRemoveA6 && !filename.isEmpty()) {
+        this->close();
+    }
 }
 
 void MainWindow::on_pushButton_open_pdf_clicked()
