@@ -152,8 +152,8 @@ QStringList MainWindow::findPrinters()
     QString result = myProcess->readAll();
     QStringList printers = result.split("\n");
 
-    for(int i = 0; i <= printers.size(); i++) {
-        if(printers.at(i) == "") {
+    for(int i = 0; i < printers.size(); i++) {
+        if((printers.at(i) == "") && (i > 0)) {
             printers.removeAt(i);
         }
     }
