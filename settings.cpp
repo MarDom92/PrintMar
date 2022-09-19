@@ -27,6 +27,8 @@ void Settings::showSettings(QStringList printers, QString pdfViewer)
 
     this->show();
 
+    ui->comboBox_printing_A4->clear();
+    ui->comboBox_printing_A6->clear();
     ui->comboBox_printing_A4->addItems(this->printers);
     ui->comboBox_printing_A6->addItems(this->printers);
     ui->lineEdit_pdf_viewer->setText(pdfViewer);
