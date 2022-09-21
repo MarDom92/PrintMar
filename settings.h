@@ -33,7 +33,7 @@ private:
     QStringList printers;
 
     QString pdfViewer;
-    QString previouspdfViewer;
+    QString previousPdfViewer;
 
 public slots:
     void showSettings(QStringList printers, QString pdfViewer);

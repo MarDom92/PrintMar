@@ -45,7 +45,7 @@ void MainWindow::showMainWindow(QString currentPrinterA4, QString currentPrinter
 
     this->currentPrinterA4 = currentPrinterA4;
     this->currentPrinterA6 = currentPrinterA6;
-    this->pdfViewer =pdfViewer;
+    this->pdfViewer = pdfViewer;
 }
 
 void MainWindow::on_pushButton_print_A4_clicked()
