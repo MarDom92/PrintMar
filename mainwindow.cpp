@@ -6,6 +6,7 @@
 #include <QString>
 #include <QPushButton>
 #include <QMessageBox>
+#include <QDebug>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -185,11 +186,13 @@ void MainWindow::printDocument(QString printer, QString format)
     QString isMonochrome ="";
 
     if (printInMonochrome) {
-        isMonochrome = "ColorModel=Gray";
+        isMonochrome = "ColorModel=Grayscale";
     }
 
     QStringList arguments;
-    arguments << "-d" << printer << "-o" << "media=" + format + isMonochrome << filename;
+    arguments << "-d" << printer << "-o" << "media=" + format << "-o" << isMonochrome << filename;
+
+    qDebug() << arguments;
 
     myProcess->run(program, arguments);
 }
@@ -209,8 +212,16 @@ void MainWindow::readQSettings()
 
     QString defaultPrinter = findPrinters().at(0);
 
-    currentPrinterA4 = settings->value("currentPrinterA4", defaultPrinter).toString();
-    currentPrinterA6 = settings->value("currentPrinterA6", defaultPrinter).toString();
+    if(settings->value("currentPrinterA4") != "") {
+        currentPrinterA4 = settings->value("currentPrinterA4").toString();
+    } else {
+        currentPrinterA4 = defaultPrinter;
+    }
+    if(settings->value("currentPrinterA6") != "") {
+        currentPrinterA6 = settings->value("currentPrinterA6", defaultPrinter).toString();
+    } else {
+        currentPrinterA6 = defaultPrinter;
+    }
 
     pdfViewer = settings->value("pdfViewer", "").toString();
 }
