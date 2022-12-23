@@ -29,6 +29,7 @@ MainWindow::MainWindow(QWidget *parent)
 
     setStateOfQPushButton(ui->pushButton_to_remove_A4, toRemoveA4);
     setStateOfQPushButton(ui->pushButton_to_remove_A6, toRemoveA6);
+    setStateOfQPushButton(ui->pushButton_color_mode, printInMonochrome);
     setStateOfQPushButton(ui->pushButton_to_close_app, closeAppAfterOpenPdf);
 }
 
@@ -84,14 +85,17 @@ void MainWindow::on_pushButton_open_pdf_clicked()
     } else {
         filename = getFilenameToPrint();
 
-        QString program = pdfViewer;//"xdg-open";
-        QStringList arguments;
-        arguments << filename;
+        if(!filename.isEmpty()) {
 
-        myProcess->run(program, arguments);
+            QString program = pdfViewer;
+            QStringList arguments;
+            arguments << filename;
 
-        if(closeAppAfterOpenPdf && !filename.isEmpty()) {
-            this->close();
+            myProcess->run(program, arguments);
+
+            if(closeAppAfterOpenPdf) {
+                this->close();
+            }
         }
     }
 }
@@ -100,11 +104,7 @@ void MainWindow::on_pushButton_to_remove_A4_clicked(bool checked)
 {
     toRemoveA4 = checked ? true : false;
 
-    if (checked) {
-        setStateOfQPushButton(ui->pushButton_to_remove_A4, true);
-    } else {
-        setStateOfQPushButton(ui->pushButton_to_remove_A4, false);
-    }
+    setStateOfQPushButton(ui->pushButton_to_remove_A4, checked);
 }
 
 
@@ -112,22 +112,20 @@ void MainWindow::on_pushButton_to_remove_A6_clicked(bool checked)
 {
     toRemoveA6 = checked ? true : false;
 
-    if (checked) {
-        setStateOfQPushButton(ui->pushButton_to_remove_A6, true);
-    } else {
-        setStateOfQPushButton(ui->pushButton_to_remove_A6, false);
-    }
+    setStateOfQPushButton(ui->pushButton_to_remove_A6, checked);
 }
 
 void MainWindow::on_pushButton_to_close_app_clicked(bool checked)
 {
     closeAppAfterOpenPdf = checked ? true : false;
 
-    if (checked) {
-        setStateOfQPushButton(ui->pushButton_to_close_app, true);
-    } else {
-        setStateOfQPushButton(ui->pushButton_to_close_app, false);
-    }
+    setStateOfQPushButton(ui->pushButton_to_close_app, checked);
+}
+
+void MainWindow::on_pushButton_color_mode_clicked(bool checked)
+{
+    printInMonochrome = checked ? true : false;
+    setStateOfQPushButton(ui->pushButton_color_mode, checked);
 }
 
 void MainWindow::on_pushButton_settings_clicked()
@@ -184,9 +182,14 @@ void MainWindow::setStateOfQPushButton(QPushButton *button, bool state)
 void MainWindow::printDocument(QString printer, QString format)
 {
     QString program = "lp";
+    QString isMonochrome ="";
+
+    if (printInMonochrome) {
+        isMonochrome = "ColorModel=Gray";
+    }
 
     QStringList arguments;
-    arguments << "-d" << printer << "-o" << "media=" + format << filename;
+    arguments << "-d" << printer << "-o" << "media=" + format + isMonochrome << filename;
 
     myProcess->run(program, arguments);
 }
@@ -201,6 +204,7 @@ void MainWindow::readQSettings()
 {
     toRemoveA4 = settings->value("toRemoveA4", false).toBool();
     toRemoveA6 = settings->value("toRemoveA6", false).toBool();
+    printInMonochrome = settings->value("printInMonochrome", false).toBool();
     closeAppAfterOpenPdf = settings->value("closeAppAfterOpenPdf", false).toBool();
 
     QString defaultPrinter = findPrinters().at(0);
@@ -215,6 +219,7 @@ void MainWindow::saveQSettings()
 {
     settings->setValue("toRemoveA4", toRemoveA4);
     settings->setValue("toRemoveA6", toRemoveA6);
+    settings->setValue("printInMonochrome", printInMonochrome);
     settings->setValue("closeAppAfterOpenPdf", closeAppAfterOpenPdf);
     settings->setValue("currentPrinterA4", currentPrinterA4);
     settings->setValue("currentPrinterA6", currentPrinterA6);

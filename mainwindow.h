@@ -41,6 +41,8 @@ private slots:
 
     void on_pushButton_close_clicked();
 
+    void on_pushButton_color_mode_clicked(bool checked);
+
 private:
     Ui::MainWindow *ui;
 
@@ -54,6 +56,7 @@ private:
 
     bool toRemoveA4;
     bool toRemoveA6;
+    bool printInMonochrome;
     bool closeAppAfterOpenPdf;
 
     QString currentPrinterA4;
