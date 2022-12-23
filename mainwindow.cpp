@@ -6,7 +6,6 @@
 #include <QString>
 #include <QPushButton>
 #include <QMessageBox>
-#include <QDebug>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -191,8 +190,6 @@ void MainWindow::printDocument(QString printer, QString format)
 
     QStringList arguments;
     arguments << "-d" << printer << "-o" << "media=" + format << "-o" << isMonochrome << filename;
-
-    qDebug() << arguments;
 
     myProcess->run(program, arguments);
 }
