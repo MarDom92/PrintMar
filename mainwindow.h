@@ -31,9 +31,7 @@ private slots:
 
     void on_pushButton_open_pdf_clicked();
 
-    void on_pushButton_to_remove_A4_clicked(bool checked);
-
-    void on_pushButton_to_remove_A6_clicked(bool checked);
+    void on_pushButton_to_remove_clicked(bool checked);
 
     void on_pushButton_to_close_app_clicked(bool checked);
 
@@ -54,8 +52,7 @@ private:
 
     QString filename;
 
-    bool toRemoveA4;
-    bool toRemoveA6;
+    bool isFileToRemove;
     bool printInMonochrome;
     bool closeAppAfterOpenPdf;
 

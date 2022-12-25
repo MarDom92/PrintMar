@@ -27,8 +27,7 @@ MainWindow::MainWindow(QWidget *parent)
 
     readQSettings();
 
-    setStateOfQPushButton(ui->pushButton_to_remove_A4, toRemoveA4);
-    setStateOfQPushButton(ui->pushButton_to_remove_A6, toRemoveA6);
+    setStateOfQPushButton(ui->pushButton_to_remove, isFileToRemove);
     setStateOfQPushButton(ui->pushButton_color_mode, printInMonochrome);
     setStateOfQPushButton(ui->pushButton_to_close_app, closeAppAfterOpenPdf);
 }
@@ -55,7 +54,7 @@ void MainWindow::on_pushButton_print_A4_clicked()
 
     printDocument(currentPrinterA4, "A4");
 
-    if(toRemoveA4 && !filename.isEmpty()) {
+    if(isFileToRemove && !filename.isEmpty()) {
         removeFile(filename);
     }
 
@@ -68,7 +67,7 @@ void MainWindow::on_pushButton_print_A6_clicked()
 
     printDocument(currentPrinterA6, "A6");
 
-    if(toRemoveA6 && !filename.isEmpty()) {
+    if(isFileToRemove && !filename.isEmpty()) {
         removeFile(filename);
     }
 
@@ -100,19 +99,11 @@ void MainWindow::on_pushButton_open_pdf_clicked()
     }
 }
 
-void MainWindow::on_pushButton_to_remove_A4_clicked(bool checked)
+void MainWindow::on_pushButton_to_remove_clicked(bool checked)
 {
-    toRemoveA4 = checked ? true : false;
+    isFileToRemove = checked ? true : false;
 
-    setStateOfQPushButton(ui->pushButton_to_remove_A4, checked);
-}
-
-
-void MainWindow::on_pushButton_to_remove_A6_clicked(bool checked)
-{
-    toRemoveA6 = checked ? true : false;
-
-    setStateOfQPushButton(ui->pushButton_to_remove_A6, checked);
+    setStateOfQPushButton(ui->pushButton_to_remove, checked);
 }
 
 void MainWindow::on_pushButton_to_close_app_clicked(bool checked)
@@ -202,8 +193,7 @@ void MainWindow::removeFile(QString filename)
 
 void MainWindow::readQSettings()
 {
-    toRemoveA4 = settings->value("toRemoveA4", false).toBool();
-    toRemoveA6 = settings->value("toRemoveA6", false).toBool();
+    isFileToRemove = settings->value("isFileToRemove", false).toBool();
     printInMonochrome = settings->value("printInMonochrome", false).toBool();
     closeAppAfterOpenPdf = settings->value("closeAppAfterOpenPdf", false).toBool();
 
@@ -225,8 +215,7 @@ void MainWindow::readQSettings()
 
 void MainWindow::saveQSettings()
 {
-    settings->setValue("toRemoveA4", toRemoveA4);
-    settings->setValue("toRemoveA6", toRemoveA6);
+    settings->setValue("isFileToRemove", isFileToRemove);
     settings->setValue("printInMonochrome", printInMonochrome);
     settings->setValue("closeAppAfterOpenPdf", closeAppAfterOpenPdf);
     settings->setValue("currentPrinterA4", currentPrinterA4);
